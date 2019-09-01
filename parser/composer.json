@@ -1,0 +1,5 @@
+{
+    "require": {
+        "salaros/vtwsclib-php": "*"
+    }
+}

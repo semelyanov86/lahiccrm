@@ -1,0 +1,35 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vte_modules</name>
+			<sql><![CDATA[CREATE TABLE `vte_modules` (
+				`module`  varchar(50) NOT NULL ,
+				`valid`  int(1) NULL ,
+				PRIMARY KEY (`module`));]]></sql>
+		</table>
+		<table>
+			<name>vte_custom_expenses_settings</name>
+			<sql><![CDATA[CREATE TABLE `vte_custom_expenses_settings` (
+				`enable`  int(3) NULL DEFAULT 1,
+				`product`  integer NULL
+				)]]></sql>
+		</table>
+		<table>
+			<name>vte_custom_expenses_mapping</name>
+			<sql><![CDATA[CREATE TABLE `vte_custom_expenses_mapping` (
+				`module`  varchar(255) NULL ,
+				`quantity`  varchar(255) NULL ,
+				`price`  varchar(50) NULL ,
+				`description`  varchar(255) NULL ,
+				`active`  varchar(255) NULL ,
+				`info`  varchar(255) NULL ,
+				`default_item_module`  varchar(50) NULL ,
+				`default_item_value`  integer(50) NULL ,
+				`custom_expenses_name`  varchar(50) NULL,
+				`id`  integer UNSIGNED NOT NULL AUTO_INCREMENT ,
+				PRIMARY KEY (`id`)
+				)]]></sql>
+		</table>
+	</tables>
+</schema>

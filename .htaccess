@@ -1,0 +1,5 @@
+Options -Indexes
+RedirectMatch 403 (?i)/+storage/
+RedirectMatch 403 (?i)/+.*\.txt
+RedirectMatch 403 (?i).*\.log$
+RedirectMatch 403 (?i)/+(soap|cache|data|include|includes|logs|modules|pkg)/.(php|tpl)

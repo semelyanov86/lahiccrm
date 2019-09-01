@@ -1,0 +1,20 @@
+<?php
+set_time_limit(0);
+ini_set('memory_limit', '2048M');
+require_once 'config.inc.php';
+require_once 'include/utils/utils.php';
+require_once 'includes/Loader.php';
+vimport ('includes.runtime.EntryPoint');
+
+global $adb;
+
+$rsGroup = $adb->pquery("SELECT vtiger_groups.groupid FROM vtiger_groups
+                            WHERE description = 'Created by Team module'", array());
+if($adb->num_rows($rsGroup)) {
+    while ($rowGroup = $adb->fetch_array($rsGroup)) {
+        $groupModel = Settings_Groups_Record_Model::getInstance($rowGroup['groupid']);
+        $groupModel->recalculate(array());
+    }
+}
+Settings_SharingAccess_Module_Model::recalculateSharingRules();
+?>
