@@ -55,6 +55,10 @@ $languageStrings = array(
     'LBL_THIS_LINE_ITEM_IS_DELETED_FROM_THE_SYSTEM_PLEASE_REMOVE_THIS_LINE_ITEM' => 'Эта позиция удаляется из системы,пожалуйста, удалите эту строку элементов',
     //SalesPlatform.ru begin
     'fromsite' => 'Создано с сайта',
+    'Delivery Done' => 'Çatdırılıb - Доставлено',
+    'Payment made' => 'Ödənilib - Оплачено',
+    'Paid Delivered' => 'Çatdırılıb və ödənilib',
+    'Closed' => 'Bağlandı - Закрыто',
     //SalesPlatform.ru end
 );
 

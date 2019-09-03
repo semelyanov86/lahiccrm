@@ -24,7 +24,11 @@ $languageStrings = array(
 	'Customer Name'                => 'Название Клиента', 
 	'Notes'                        => 'Примечания'        , 
 	'In Service'                   => 'Обслуживается'  , 
-	'Out-of-service'               => 'Не обслуживается', 
+	'Out-of-service'               => 'Не обслуживается',
+    '19l' => 'Lahıc Su 19L',
+    '19but' => 'Boş tara - пустая тара',
+    'p1' => 'Pompa - Помпа 7',
+    'p2' => 'Pompa - Помпа 10',
 );
 
 // SalesPlatform.ru begin SPConfiguration fix

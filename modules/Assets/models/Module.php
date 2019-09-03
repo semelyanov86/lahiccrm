@@ -40,4 +40,50 @@ class Assets_Module_Model extends Vtiger_Module_Model {
 		return array('Import', 'Export', 'DuplicatesHandling');
 	}
 
+    public function substractProductsFromAsset($products, $asset) {
+        $asset->set('mode', 'edit');
+        foreach ($products as $key => $product) {
+            $code = $product['hdnProductcode' . $key];
+            $fieldname = $this->getFieldNameByLabel($code, 48);
+            $qty = $asset->get($fieldname) - $product['qty' . $key];
+            $asset->set($fieldname, $qty);
+        }
+        $asset->save();
+    }
+
+    public function addProductsInAsset($products, $asset) {
+        $asset->set('mode', 'edit');
+        foreach ($products as $key => $product) {
+            $code = $product['hdnProductcode' . $key];
+            $fieldname = $this->getFieldNameByLabel($code, 48);
+            $qty = $asset->get($fieldname) + $product['qty' . $key];
+            $asset->set($fieldname, $qty);
+        }
+        $asset->save();
+    }
+
+    public function addAmountToAsset($amount, $asset) {
+        $asset->set('mode', 'edit');
+        $newAmount = CurrencyField::convertToUserFormat($asset->get('cf_1298'), null, false) + $amount;
+        $asset->set('cf_1298', $newAmount);
+        $asset->save();
+    }
+
+    public function removeAmountFromAsset($amount, $asset) {
+        $asset->set('mode', 'edit');
+        $newAmount = CurrencyField::convertToUserFormat($asset->get('cf_1298'), null, false) - $amount;
+        $asset->set('cf_1298', $newAmount);
+        $asset->save();
+    }
+
+    function getFieldNameByLabel($fieldLabel, $tabId) {
+        $db = PearDatabase::getInstance();
+        $query = 'SELECT * FROM vtiger_field WHERE tabid IN ('.  generateQuestionMarks($tabId).') AND fieldlabel=?';
+        $result = $db->pquery($query, array($tabId,$fieldLabel));
+        if ($db->num_rows($result) > 0) {
+            return $db->query_result($result,0,'fieldname');
+        } else {
+            return false;
+        }
+    }
 }

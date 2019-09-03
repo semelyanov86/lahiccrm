@@ -352,8 +352,10 @@ class Assets extends CRMEntity {
 	*/
 	function vtlib_handler($moduleName, $eventType) {
 		require_once('include/utils/utils.php');
+		require 'modules/com_vtiger_workflow/VTEntityMethodManager.inc';
 		global $adb;
 
+		$emm = new VTEntityMethodManager($adb);
  		if($eventType == 'module.postinstall') {
 			//Add Assets Module to Customer Portal
 			global $adb;
@@ -392,9 +394,17 @@ class Assets extends CRMEntity {
 			}
 
 		} else if($eventType == 'module.disabled') {
-		// TODO Handle actions when this module is disabled.
+			$emm->removeEntityMethod('SalesOrder', 'Update assets quantity');
+			$emm->removeEntityMethod('SalesOrder', 'Create PO from SO');
+			$emm->removeEntityMethod('SalesOrder', 'Calc ostatok from SO');
+			$emm->removeEntityMethod('PurchaseOrder', 'Calc ostatok from PO');
+			$emm->removeEntityMethod('PurchaseOrder', 'Update assets quantity from PO');
 		} else if($eventType == 'module.enabled') {
-		// TODO Handle actions when this module is enabled.
+			$emm->addEntityMethod("SalesOrder", "Update assets quantity","modules/Assets/workflow/processOrderStatus.php", "ProcessOrderStatus");
+			$emm->addEntityMethod("SalesOrder", "Create PO from SO","modules/Assets/workflow/createPOfromSO.php", "CreatePOfromSO");
+			$emm->addEntityMethod("SalesOrder", "Calc ostatok from SO","modules/Assets/workflow/calcOstatokFromSO.php", "CalcOstatokFromSO");
+			$emm->addEntityMethod("PurchaseOrder", "Calc ostatok from PO","modules/Assets/workflow/calcOstatokFromPO.php", "CalcOstatokFromPO");
+			$emm->addEntityMethod("PurchaseOrder", "Update assets quantity from PO","modules/Assets/workflow/processPurchaseStatus.php", "ProcessPurchaseStatus");
 		} else if($eventType == 'module.preuninstall') {
 		// TODO Handle actions when this module is about to be deleted.
 		} else if($eventType == 'module.preupdate') {
