@@ -2,6 +2,7 @@
 
 
 function CreatePOfromSO($ws_entity){
+    global $adb;
     // WS id
     $ws_id = $ws_entity->getId();
     $module = $ws_entity->getModuleName();
@@ -55,7 +56,7 @@ function CreatePOfromSO($ws_entity){
         $price = $product->get('unit_price');
         $total = $price * $qty;
         for ($i = 1; $i <= 10; $i++) {
-            if ($i == 1) {
+        /*    if ($i == 1) {
                 $_REQUEST['hdnProductId1'] = 12;
                 $_REQUEST['lineItemType1'] = 'Products';
                 $_REQUEST['qty1'] = $qty;
@@ -65,7 +66,7 @@ function CreatePOfromSO($ws_entity){
                 $_REQUEST['total'] = $total;
                 $_REQUEST['subtotal'] = $total;
                 $_REQUEST['currency_id'] = 2;
-            } else {
+            } else {*/
                 unset($_REQUEST['productName' . $i]);
                 unset($_REQUEST['hdnProductId' . $i]);
                 unset($_REQUEST['lineItemType' . $i]);
@@ -79,9 +80,11 @@ function CreatePOfromSO($ws_entity){
                 unset($_REQUEST['discount' . $i]);
                 unset($_REQUEST['discount_percentage' . $i]);
                 unset($_REQUEST['discount_amount' . $i]);
-            }
+//            }
         }
         $poInstance->save();
+        $sql= $adb->pquery("INSERT INTO vtiger_inventoryproductrel SET id=?,productid=?,sequence_no=?,quantity=?,listprice=?",array($poInstance->getId(),12,1,$qty,$price));
+        $sql= $adb->pquery("UPDATE vtiger_purchaseorder SET total=?,subtotal=?,currency_id=? WHERE purchaseorderid=?",array($total,$total,2,$poInstance->getId()));
         $_REQUEST = $oldRequest;
 
 
