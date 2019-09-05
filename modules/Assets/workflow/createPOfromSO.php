@@ -32,7 +32,7 @@ function CreatePOfromSO($ws_entity){
         $poInstance = Vtiger_Record_Model::getCleanInstance('PurchaseOrder');
         $poInstance->set('mode', 'create');
         $poInstance->set('vendor_id', '95681');
-        $poInstance->set('postatus', 'Created');
+        $poInstance->set('postatus', 'Delivered and Paid');
         $poInstance->set('assigned_user_id', $soInstance->get('assigned_user_id'));
         $poInstance->set('description', $soInstance->get('description'));
         $poInstance->set('subject', 'Возврат ' . $soInstance->get('subject'));
@@ -86,7 +86,8 @@ function CreatePOfromSO($ws_entity){
         $sql= $adb->pquery("INSERT INTO vtiger_inventoryproductrel SET id=?,productid=?,sequence_no=?,quantity=?,listprice=?",array($poInstance->getId(),12,1,$qty,$price));
         $sql= $adb->pquery("UPDATE vtiger_purchaseorder SET total=?,subtotal=?,currency_id=? WHERE purchaseorderid=?",array($total,$total,2,$poInstance->getId()));
         $_REQUEST = $oldRequest;
-
+        ProcessDoublePurchaseStatus($poInstance->getId());
+        CalcDoubleOstatokFromPO($poInstance->getId());
 
     }
 
@@ -97,5 +98,63 @@ if (!function_exists('vtws_getCRMEntityId')) {
     function vtws_getCRMEntityId($elementid) {
         list ($typeId, $id) = vtws_getIdComponents($elementid);
         return $id;
+    }
+}
+
+function ProcessDoublePurchaseStatus($crmid){
+
+    if ($crmid <= 0) {
+        return;
+    }
+
+    //получение объекта со всеми данными о текущей записи Модуля "PurchaseOrder"
+    $poInstance = Vtiger_Record_Model::getInstanceById($crmid);
+
+    $products = $poInstance->getProducts();
+    //получение id Актива
+    $assetId = $poInstance->get('cf_assets_id');
+
+    $assetModule = new Assets_Module_Model();
+
+    if($assetId) {
+        //получение объекта со всеми данными о текущей записи Модуля "Актив"
+        $assetInstance = Vtiger_Record_Model::getInstanceById($assetId);
+        // получение статуса заказа
+        $postatus = $poInstance->get('postatus');
+
+        switch ($postatus) {
+            case 'Delivery Made':
+                $assetModule->addProductsInAsset($products, $assetInstance);
+                break;
+            case 'Payment made':
+                $assetModule->removeAmountFromAsset($poInstance->get('hdnGrandTotal'), $assetInstance);
+                break;
+            case 'Delivered and Paid':
+                $assetModule->addProductsInAsset($products, $assetInstance);
+                $assetModule->removeAmountFromAsset($poInstance->get('hdnGrandTotal'), $assetInstance);
+                break;
+            default:
+//                echo "Informed status";
+        }
+
+
+    }
+}
+
+function CalcDoubleOstatokFromPO($crmid){
+
+    if ($crmid <= 0) {
+        return;
+    }
+
+    //получение объекта со всеми данными о текущей записи Модуля "SalesOrder"
+    $poInstance = Vtiger_Record_Model::getInstanceById($crmid);
+
+    $dealId = $poInstance->get('cf_potentials_id');
+
+    $soModule = new SalesOrder_Module_Model();
+
+    if($dealId) {
+        $soModule->calcOstatok($dealId);
     }
 }
