@@ -86,4 +86,36 @@ class Assets_Module_Model extends Vtiger_Module_Model {
             return false;
         }
     }
+
+    public function countPOandSO($asset)
+    {
+        if ($asset->getId() < 1) {
+            return false;
+        }
+        $db = PearDatabase::getInstance();
+        $asset->set('mode', 'edit');
+        $query = 'SELECT COUNT(vtiger_salesorder.salesorderid) AS cnt FROM vtiger_salesorder INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_salesorder.salesorderid WHERE vtiger_crmentity.deleted = 0 AND vtiger_salesorder.cf_assets_id = ?';
+        $result = $db->pquery($query, array($asset->getId()));
+        if ($db->num_rows($result) > 0) {
+            $asset->set('cf_1348', $db->query_result($result,0,'cnt'));
+        }
+        $query = 'SELECT COUNT(vtiger_purchaseorder.purchaseorderid) AS cnt FROM vtiger_purchaseorder INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_purchaseorder.purchaseorderid WHERE vtiger_crmentity.deleted = 0 AND vtiger_purchaseorder.cf_assets_id = ?';
+        $result = $db->pquery($query, array($asset->getId()));
+        if ($db->num_rows($result) > 0) {
+            $asset->set('cf_1350', $db->query_result($result,0,'cnt'));
+        }
+        $doneOrders = 0;
+        $query = "SELECT COUNT(vtiger_salesorder.salesorderid) AS cnt FROM vtiger_salesorder INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_salesorder.salesorderid WHERE vtiger_crmentity.deleted = 0 AND vtiger_salesorder.cf_assets_id = ? AND vtiger_salesorder.sostatus IN ('Delivery Done', 'Paid Delivered', 'Closed')";
+        $result = $db->pquery($query, array($asset->getId()));
+        if ($db->num_rows($result) > 0) {
+            $doneOrders += $db->query_result($result,0,'cnt');
+        }
+        $query = "SELECT COUNT(vtiger_purchaseorder.purchaseorderid) AS cnt FROM vtiger_purchaseorder INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_purchaseorder.purchaseorderid WHERE vtiger_crmentity.deleted = 0 AND vtiger_purchaseorder.cf_assets_id = ? AND vtiger_purchaseorder.postatus IN ('Delivery Made', 'Delivered and Paid', 'Closed')";
+        $result = $db->pquery($query, array($asset->getId()));
+        if ($db->num_rows($result) > 0) {
+            $doneOrders += $db->query_result($result,0,'cnt');
+            $asset->set('cf_1352', $doneOrders);
+        }
+        $asset->save();
+    }
 }

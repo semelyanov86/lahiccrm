@@ -13,7 +13,7 @@ class SalesOrder_Module_Model extends Inventory_Module_Model{
     public function calcOstatok($id)
     {
         global $adb;
-        $query = "SELECT salesorderid FROM `vtiger_salesorder` INNER JOIN vtiger_crmentity ON vtiger_salesorder.salesorderid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = 0 AND vtiger_salesorder.potentialid = ?";
+        $query = "SELECT salesorderid FROM `vtiger_salesorder` INNER JOIN vtiger_crmentity ON vtiger_salesorder.salesorderid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = 0 AND vtiger_salesorder.potentialid = ? AND (`sostatus` = 'Paid Delivered' OR `sostatus` = 'Delivery Done' OR `sostatus` = 'Payment made' OR `sostatus` = 'Closed' OR `sostatus` = 'Delivered')";
         $result = $adb->pquery($query, array($id));
         $salesList = array();
         $soSum = 0;

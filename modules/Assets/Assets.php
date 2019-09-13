@@ -394,12 +394,14 @@ class Assets extends CRMEntity {
 			}
 
 		} else if($eventType == 'module.disabled') {
+			$emm->removeEntityMethod('Assets', 'Count Orders');
 			$emm->removeEntityMethod('SalesOrder', 'Update assets quantity');
 			$emm->removeEntityMethod('SalesOrder', 'Create PO from SO');
 			$emm->removeEntityMethod('SalesOrder', 'Calc ostatok from SO');
 			$emm->removeEntityMethod('PurchaseOrder', 'Calc ostatok from PO');
 			$emm->removeEntityMethod('PurchaseOrder', 'Update assets quantity from PO');
 		} else if($eventType == 'module.enabled') {
+			$emm->addEntityMethod("Assets", "Count Orders","modules/Assets/workflow/countOrders.php", "CountOrders");
 			$emm->addEntityMethod("SalesOrder", "Update assets quantity","modules/Assets/workflow/processOrderStatus.php", "ProcessOrderStatus");
 			$emm->addEntityMethod("SalesOrder", "Create PO from SO","modules/Assets/workflow/createPOfromSO.php", "CreatePOfromSO");
 			$emm->addEntityMethod("SalesOrder", "Calc ostatok from SO","modules/Assets/workflow/calcOstatokFromSO.php", "CalcOstatokFromSO");
