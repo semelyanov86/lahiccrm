@@ -9,6 +9,7 @@ function CreatePOfromSO($ws_entity){
     if (empty($ws_id) || empty($module)) {
         return;
     }
+    $taraCode = '19but';
 
     // CRM id
     $crmid = vtws_getCRMEntityId($ws_id);
@@ -20,6 +21,7 @@ function CreatePOfromSO($ws_entity){
     //получение объекта со всеми данными о текущей записи Модуля "SalesOrder"
     $soInstance = Vtiger_Record_Model::getInstanceById($crmid);
     $contactId = $soInstance->get('contact_id');
+    $potentialInstance = false;
     if (!$contactId || $contactId < 1) {
         $potentialId = $soInstance->get('potential_id');
         $potentialInstance = Vtiger_Record_Model::getInstanceById($potentialId, 'Potentials');
@@ -88,7 +90,20 @@ function CreatePOfromSO($ws_entity){
         $_REQUEST = $oldRequest;
         ProcessDoublePurchaseStatus($poInstance->getId());
         CalcDoubleOstatokFromPO($poInstance->getId());
+        $potentialId = $soInstance->get('potential_id');
 
+        if ($potentialId > 0) {
+            $potentialInstance = Vtiger_Record_Model::getInstanceById($potentialId, 'Potentials');
+            if ($potentialInstance) {
+                $isDeposit = $potentialInstance->get('cf_1332');
+                if ($isDeposit) {
+                    $assetModule = Vtiger_Module_Model::getInstance('Assets');
+                    $newPO = Vtiger_Record_Model::getInstanceById($poInstance->getId(), "PurchaseOrder");
+                    $assetModule->updateDiscount(12, $poInstance->getId(), $newPO, $total);
+                }
+
+            }
+        }
     }
 
 }

@@ -118,4 +118,29 @@ class Assets_Module_Model extends Vtiger_Module_Model {
         }
         $asset->save();
     }
+
+    public function updateDiscount($taraId, $crmid, $module, $total)
+    {
+        global $adb;
+        if ($taraId && $crmid) {
+            $finalTotal = $module->get('hdnGrandTotal') - $total;
+            $subTotal = $module->get('hdnSubTotal') - $total;
+            $preTotal = $module->get('pre_tax_total') - $total;
+            if ($finalTotal < 0 || $subTotal < 0 || $preTotal < 0) {
+                return false;
+            }
+            $query = "UPDATE vtiger_inventoryproductrel SET vtiger_inventoryproductrel.discount_percent = ? WHERE vtiger_inventoryproductrel.id = ? AND vtiger_inventoryproductrel.productid = ?";
+            $adb->pquery($query, array(100, $crmid, $taraId));
+            if ($module->getModuleName() == "SalesOrder") {
+                $query = "UPDATE vtiger_salesorder SET vtiger_salesorder.total = ?, vtiger_salesorder.subtotal = ?, vtiger_salesorder.pre_tax_total = ? WHERE vtiger_salesorder.salesorderid = ?";
+            } else {
+                $query = "UPDATE vtiger_purchaseorder SET vtiger_purchaseorder.total = ?, vtiger_purchaseorder.subtotal = ?, vtiger_purchaseorder.pre_tax_total = ? WHERE vtiger_purchaseorder.purchaseorderid = ?";
+            }
+
+            $adb->pquery($query, array($finalTotal, $subTotal, $preTotal, $crmid));
+        } else {
+            return false;
+        }
+
+    }
 }

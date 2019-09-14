@@ -398,6 +398,8 @@ class Assets extends CRMEntity {
 			$emm->removeEntityMethod('SalesOrder', 'Update assets quantity');
 			$emm->removeEntityMethod('SalesOrder', 'Create PO from SO');
 			$emm->removeEntityMethod('SalesOrder', 'Calc ostatok from SO');
+			$emm->removeEntityMethod('SalesOrder', 'Create Discount For SO');
+			$emm->removeEntityMethod('PurchaseOrder', 'Create Discount For PO');
 			$emm->removeEntityMethod('PurchaseOrder', 'Calc ostatok from PO');
 			$emm->removeEntityMethod('PurchaseOrder', 'Update assets quantity from PO');
 		} else if($eventType == 'module.enabled') {
@@ -405,6 +407,8 @@ class Assets extends CRMEntity {
 			$emm->addEntityMethod("SalesOrder", "Update assets quantity","modules/Assets/workflow/processOrderStatus.php", "ProcessOrderStatus");
 			$emm->addEntityMethod("SalesOrder", "Create PO from SO","modules/Assets/workflow/createPOfromSO.php", "CreatePOfromSO");
 			$emm->addEntityMethod("SalesOrder", "Calc ostatok from SO","modules/Assets/workflow/calcOstatokFromSO.php", "CalcOstatokFromSO");
+			$emm->addEntityMethod("SalesOrder", "Create Discount For SO","modules/Assets/workflow/createDiscountForSO.php", "CreateDiscountForSO");
+			$emm->addEntityMethod("PurchaseOrder", "Create Discount For PO","modules/Assets/workflow/createDiscountForPO.php", "CreateDiscountForPO");
 			$emm->addEntityMethod("PurchaseOrder", "Calc ostatok from PO","modules/Assets/workflow/calcOstatokFromPO.php", "CalcOstatokFromPO");
 			$emm->addEntityMethod("PurchaseOrder", "Update assets quantity from PO","modules/Assets/workflow/processPurchaseStatus.php", "ProcessPurchaseStatus");
 		} else if($eventType == 'module.preuninstall') {
