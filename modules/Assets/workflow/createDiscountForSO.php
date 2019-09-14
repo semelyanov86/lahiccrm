@@ -24,7 +24,7 @@ function CreateDiscountForSO($ws_entity){
     }
     $potentialInstance = Vtiger_Record_Model::getInstanceById($potentialid, 'Potentials');
     $isDeposit = $potentialInstance->get('cf_1332');
-    if (!$isDeposit) {
+    if ($isDeposit) {
         return false;
     }
     $products = $soModel->getProducts();

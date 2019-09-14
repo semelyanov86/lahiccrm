@@ -126,7 +126,7 @@ class Assets_Module_Model extends Vtiger_Module_Model {
             $finalTotal = $module->get('hdnGrandTotal') - $total;
             $subTotal = $module->get('hdnSubTotal') - $total;
             $preTotal = $module->get('pre_tax_total') - $total;
-            if ($finalTotal < 0 || $subTotal < 0 || $preTotal < 0) {
+            if ($finalTotal < 0 || $subTotal < 0) {
                 return false;
             }
             $query = "UPDATE vtiger_inventoryproductrel SET vtiger_inventoryproductrel.discount_percent = ? WHERE vtiger_inventoryproductrel.id = ? AND vtiger_inventoryproductrel.productid = ?";

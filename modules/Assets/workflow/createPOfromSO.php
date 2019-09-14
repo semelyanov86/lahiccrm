@@ -88,15 +88,13 @@ function CreatePOfromSO($ws_entity){
         $sql= $adb->pquery("INSERT INTO vtiger_inventoryproductrel SET id=?,productid=?,sequence_no=?,quantity=?,listprice=?",array($poInstance->getId(),12,1,$qty,$price));
         $sql= $adb->pquery("UPDATE vtiger_purchaseorder SET total=?,subtotal=?,currency_id=? WHERE purchaseorderid=?",array($total,$total,2,$poInstance->getId()));
         $_REQUEST = $oldRequest;
-        ProcessDoublePurchaseStatus($poInstance->getId());
-        CalcDoubleOstatokFromPO($poInstance->getId());
         $potentialId = $soInstance->get('potential_id');
 
         if ($potentialId > 0) {
             $potentialInstance = Vtiger_Record_Model::getInstanceById($potentialId, 'Potentials');
             if ($potentialInstance) {
                 $isDeposit = $potentialInstance->get('cf_1332');
-                if ($isDeposit) {
+                if (!$isDeposit) {
                     $assetModule = Vtiger_Module_Model::getInstance('Assets');
                     $newPO = Vtiger_Record_Model::getInstanceById($poInstance->getId(), "PurchaseOrder");
                     $assetModule->updateDiscount(12, $poInstance->getId(), $newPO, $total);
@@ -104,6 +102,9 @@ function CreatePOfromSO($ws_entity){
 
             }
         }
+        ProcessDoublePurchaseStatus($poInstance->getId());
+        CalcDoubleOstatokFromPO($poInstance->getId());
+
     }
 
 }
