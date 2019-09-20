@@ -67,6 +67,17 @@ class Potentials_Record_Model extends Vtiger_Record_Model {
 				'&relationOperation=true';
 	}
 
+    /**
+     * Function returns the url for create Purchase Order
+     * @return <String>
+     */
+    public function getCreatePurchaseOrderUrl() {
+        $purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
+        return $purchaseOrderModuleModel->getCreateRecordUrl().'&sourceRecord='.$this->getId().'&sourceModule='.$this->getModuleName().
+            '&cf_potentials_id='.$this->getId().'&vendor_id=95681&contact_id='.$this->get('contact_id').'&cf_assets_id='.$this->get('cf_assets_id').
+            '&relationOperation=true';
+    }
+
 	/**
 	 * Function returns the url for converting potential
 	 */

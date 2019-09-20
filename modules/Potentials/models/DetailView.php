@@ -23,6 +23,7 @@ class Potentials_DetailView_Model extends Vtiger_DetailView_Model {
 		$invoiceModuleModel = Vtiger_Module_Model::getInstance('Invoice');
 		$quoteModuleModel = Vtiger_Module_Model::getInstance('Quotes');
 		$salesOrderModuleModel = Vtiger_Module_Model::getInstance('SalesOrder');
+		$purchaseOrderModuleModel = Vtiger_Module_Model::getInstance('PurchaseOrder');
 		$projectModuleModel = Vtiger_Module_Model::getInstance('Project');
 
 		$emailModuleModel = Vtiger_Module_Model::getInstance('Emails');
@@ -67,6 +68,16 @@ class Potentials_DetailView_Model extends Vtiger_DetailView_Model {
 			);
 			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
 		}
+
+        if($currentUserModel->hasModuleActionPermission($purchaseOrderModuleModel ->getId(), 'CreateView')) {
+            $basicActionLink = array(
+                'linktype'	=> 'DETAILVIEW',
+                'linklabel' => vtranslate('LBL_CREATE').' '.vtranslate($purchaseOrderModuleModel ->getSingularLabelKey(), 'PurchaseOrder'),
+                'linkurl'	=> $recordModel->getCreatePurchaseOrderUrl(),
+                'linkicon'	=> ''
+            );
+            $linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
+        }
 
 		$CalendarActionLinks[] = array();
 		$CalendarModuleModel = Vtiger_Module_Model::getInstance('Calendar');
