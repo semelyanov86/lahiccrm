@@ -838,7 +838,7 @@
                         focus.getAddressByLatLng(latLng,function (address) {
                             focus.getLatLngByAddress(address, function(result) {
                                 if(result) {
-                                    var latLng = new google.maps.LatLng(result.lat, result.lng);
+                                    var latLng = new google.maps.LatLng(lat, lng);
                                     if(focus.props.currentRadius.getBounds().contains(latLng)) {
                                         var wayP = {
                                             location: address,
@@ -962,7 +962,7 @@
                             //focus.props.currentEndOfRoute = address;
                             focus.getLatLngByAddress(address, function(result) {
                                 if(result) {
-                                    var latLng = new google.maps.LatLng(result.lat, result.lng);
+                                    var latLng = new google.maps.LatLng(lat, lng);
                                     if(focus.props.currentRadius.getBounds().contains(latLng)) {
                                         var wayP = {
                                             location: address,

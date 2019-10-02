@@ -40,40 +40,69 @@ class Assets_Module_Model extends Vtiger_Module_Model {
 		return array('Import', 'Export', 'DuplicatesHandling');
 	}
 
-    public function substractProductsFromAsset($products, $asset) {
-        $asset->set('mode', 'edit');
+    public function substractProductsFromAsset($products, $asset, $nosave = true) {
+        if ($nosave) {
+            $asset->set('mode', 'edit');
+        }
         foreach ($products as $key => $product) {
             $code = $product['hdnProductcode' . $key];
             $fieldname = $this->getFieldNameByLabel($code, 48);
             $qty = $asset->get($fieldname) - $product['qty' . $key];
             $asset->set($fieldname, $qty);
         }
-        $asset->save();
+        if ($nosave) {
+            $asset->save();
+        } else {
+            return $asset;
+        }
     }
 
-    public function addProductsInAsset($products, $asset) {
-        $asset->set('mode', 'edit');
+    public function addProductsInAsset($products, $asset, $nosave = true) {
+	    if ($nosave) {
+            $asset->set('mode', 'edit');
+        }
         foreach ($products as $key => $product) {
             $code = $product['hdnProductcode' . $key];
             $fieldname = $this->getFieldNameByLabel($code, 48);
             $qty = $asset->get($fieldname) + $product['qty' . $key];
             $asset->set($fieldname, $qty);
         }
-        $asset->save();
+        if ($nosave) {
+            $asset->save();
+        } else {
+            return $asset;
+        }
     }
 
-    public function addAmountToAsset($amount, $asset) {
-        $asset->set('mode', 'edit');
-        $newAmount = CurrencyField::convertToUserFormat($asset->get('cf_1298'), null, false) + $amount;
+    public function addAmountToAsset($amount, $asset, $nosave = true) {
+        if ($nosave) {
+            $asset->set('mode', 'edit');
+            $newAmount = CurrencyField::convertToUserFormat($asset->get('cf_1298'), null, false) + $amount;
+        } else {
+            $newAmount = $asset->get('cf_1298') + $amount;
+        }
         $asset->set('cf_1298', $newAmount);
-        $asset->save();
+        if ($nosave) {
+            $asset->save();
+        } else {
+            return $asset;
+        }
     }
 
-    public function removeAmountFromAsset($amount, $asset) {
-        $asset->set('mode', 'edit');
-        $newAmount = CurrencyField::convertToUserFormat($asset->get('cf_1298'), null, false) - $amount;
+    public function removeAmountFromAsset($amount, $asset, $nosave = true) {
+	    if ($nosave) {
+            $asset->set('mode', 'edit');
+            $newAmount = CurrencyField::convertToUserFormat($asset->get('cf_1298'), null, false) - $amount;
+        } else {
+            $newAmount = $asset->get('cf_1298') - $amount;
+        }
+
         $asset->set('cf_1298', $newAmount);
-        $asset->save();
+        if($nosave) {
+            $asset->save();
+        } else {
+            return $asset;
+        }
     }
 
     function getFieldNameByLabel($fieldLabel, $tabId) {

@@ -29,6 +29,20 @@ $languageStrings = array(
     '19but' => 'Boş tara - пустая тара',
     'p1' => 'Pompa - Помпа 7',
     'p2' => 'Pompa - Помпа 10',
+    'disp200' => 'Dispenser 200',
+    'disp220' => 'Dispenser 220',
+    'disp300' => 'Dispenser 300',
+    'cash' => 'Наличные',
+    'LBL_RECALCULATE' => 'Пересчёт остатков',
+    'LBL_SUCCESS_RECALCULATE' => 'Данные успешно пересчитаны',
+    's19l' => 'Lahıc Su 19L',
+    's19but' => 'Boş tara - пустая тара',
+    'sp1' => 'Pompa - Помпа 7',
+    'sp2' => 'Pompa - Помпа 10',
+    'sdisp200' => 'Dispenser 200',
+    'sdisp220' => 'Dispenser 220',
+    'sdisp300' => 'Dispenser 300',
+    'scash' => 'Наличные',
 );
 
 // SalesPlatform.ru begin SPConfiguration fix

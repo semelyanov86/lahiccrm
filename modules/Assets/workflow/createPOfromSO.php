@@ -22,12 +22,22 @@ function CreatePOfromSO($ws_entity){
     $soInstance = Vtiger_Record_Model::getInstanceById($crmid);
     $contactId = $soInstance->get('contact_id');
     $potentialInstance = false;
+    $accountId = $soInstance->get('account_id');
     if (!$contactId || $contactId < 1) {
         $potentialId = $soInstance->get('potential_id');
         $potentialInstance = Vtiger_Record_Model::getInstanceById($potentialId, 'Potentials');
         $contactId = $potentialInstance->get('contact_id');
     }
-    $contactInstance = Vtiger_Record_Model::getInstanceById($contactId, 'Contacts');
+    if ($contactId && $contactId > 0) {
+        $contactInstance = Vtiger_Record_Model::getInstanceById($contactId, 'Contacts');
+    } else {
+        $contactInstance = false;
+        if ($accountId && $accountId > 0) {
+            $accountInstance = Vtiger_Record_Model::getInstanceById($accountId, 'Accounts');
+        } else {
+            return false;
+        }
+    }
     $oldRequest = $_REQUEST;
     $qty = $soInstance->get('cf_1341');
     if ($soInstance && $qty > 0) {
@@ -42,18 +52,34 @@ function CreatePOfromSO($ws_entity){
         $poInstance->set('cf_assets_id', $soInstance->get('cf_assets_id'));
         $poInstance->set('contact_id', $soInstance->get('contact_id'));
         $poInstance->set('cf_nrl_salesorder459_id', $crmid);
-        $poInstance->set('bill_street', $contactInstance->get('mailingstreet'));
-        $poInstance->set('ship_street', $contactInstance->get('otherstreet'));
-        $poInstance->set('bill_city', $contactInstance->get('mailingcity'));
-        $poInstance->set('ship_city', $contactInstance->get('othercity'));
-        $poInstance->set('bill_state', $contactInstance->get('mailingstate'));
-        $poInstance->set('ship_state', $contactInstance->get('otherstate'));
-        $poInstance->set('bill_code', $contactInstance->get('mailingzip'));
-        $poInstance->set('ship_code', $contactInstance->get('otherzip'));
-        $poInstance->set('bill_country', $contactInstance->get('mailingcountry'));
-        $poInstance->set('cf_1337', $contactInstance->get('cf_1273'));
-        $poInstance->set('cf_1339', $contactInstance->get('cf_1277'));
-        $poInstance->set('ship_country', $contactInstance->get('othercountry'));
+        $poInstance->set('cf_accounts_id', $accountId);
+        if ($contactInstance) {
+            $poInstance->set('bill_street', $contactInstance->get('mailingstreet'));
+            $poInstance->set('ship_street', $contactInstance->get('otherstreet'));
+            $poInstance->set('bill_city', $contactInstance->get('mailingcity'));
+            $poInstance->set('ship_city', $contactInstance->get('othercity'));
+            $poInstance->set('bill_state', $contactInstance->get('mailingstate'));
+            $poInstance->set('ship_state', $contactInstance->get('otherstate'));
+            $poInstance->set('bill_code', $contactInstance->get('mailingzip'));
+            $poInstance->set('ship_code', $contactInstance->get('otherzip'));
+            $poInstance->set('bill_country', $contactInstance->get('mailingcountry'));
+            $poInstance->set('cf_1337', $contactInstance->get('cf_1273'));
+            $poInstance->set('cf_1339', $contactInstance->get('cf_1277'));
+            $poInstance->set('ship_country', $contactInstance->get('othercountry'));
+        } else {
+            $poInstance->set('bill_street', $accountInstance->get('bill_street'));
+            $poInstance->set('ship_street', $accountInstance->get('ship_street'));
+            $poInstance->set('bill_city', $accountInstance->get('bill_city'));
+            $poInstance->set('ship_city', $accountInstance->get('ship_city'));
+            $poInstance->set('bill_state', $accountInstance->get('bill_state'));
+            $poInstance->set('ship_state', $accountInstance->get('ship_state'));
+            $poInstance->set('bill_code', $accountInstance->get('bill_zip'));
+            $poInstance->set('ship_code', $accountInstance->get('ship_zip'));
+            $poInstance->set('bill_country', $accountInstance->get('bill_country'));
+            $poInstance->set('cf_1337', $accountInstance->get('cf_1356'));
+            $poInstance->set('ship_country', $accountInstance->get('ship_country'));
+        }
+
         $product = Vtiger_Record_Model::getInstanceById(12, 'Products');
         $price = $product->get('unit_price');
         $total = $price * $qty;

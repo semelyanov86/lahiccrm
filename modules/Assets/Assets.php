@@ -354,6 +354,7 @@ class Assets extends CRMEntity {
 		require_once('include/utils/utils.php');
 		require 'modules/com_vtiger_workflow/VTEntityMethodManager.inc';
 		global $adb;
+		require_once('vtlib/Vtiger/Link.php');
 
 		$emm = new VTEntityMethodManager($adb);
  		if($eventType == 'module.postinstall') {
@@ -394,6 +395,7 @@ class Assets extends CRMEntity {
 			}
 
 		} else if($eventType == 'module.disabled') {
+ 			Vtiger_Link::deleteLink(48, 'DETAILVIEWBASIC', 'LBL_RECALCULATE');
 			$emm->removeEntityMethod('Assets', 'Count Orders');
 			$emm->removeEntityMethod('SalesOrder', 'Update assets quantity');
 			$emm->removeEntityMethod('SalesOrder', 'Create PO from SO');
@@ -403,6 +405,7 @@ class Assets extends CRMEntity {
 			$emm->removeEntityMethod('PurchaseOrder', 'Calc ostatok from PO');
 			$emm->removeEntityMethod('PurchaseOrder', 'Update assets quantity from PO');
 		} else if($eventType == 'module.enabled') {
+			Vtiger_Link::addLink(48,'DETAILVIEWBASIC','LBL_RECALCULATE','javascript:Assets_Detail_Js.recalculate()', '',0,'');
 			$emm->addEntityMethod("Assets", "Count Orders","modules/Assets/workflow/countOrders.php", "CountOrders");
 			$emm->addEntityMethod("SalesOrder", "Update assets quantity","modules/Assets/workflow/processOrderStatus.php", "ProcessOrderStatus");
 			$emm->addEntityMethod("SalesOrder", "Create PO from SO","modules/Assets/workflow/createPOfromSO.php", "CreatePOfromSO");
