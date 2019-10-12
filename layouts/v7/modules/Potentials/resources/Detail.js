@@ -39,7 +39,27 @@ Vtiger_Detail_Js("Potentials_Detail_Js",{
 		} else {
 			instance.displayConvertPotentialModel(Potentials_Detail_Js.cache, buttonElement);
 		}
-	}
+	},
+	recalculateBottles: function () {
+		var self = this;
+		var params = {};
+		params['action'] = 'ActionAjax';
+		params['module'] = app.getModuleName();
+		params['mode'] = 'recalculateBottles';
+		params['record'] = app.getRecordId();
+		app.helper.showProgress();
+		app.request.post({data:params}).then(
+			function (err,data) {
+				if(err == null) {
+					app.helper.showSuccessNotification({message: data.message});
+				} else {
+					app.helper.showErrorMessage('There was an error in calculation');
+				}
+				app.helper.hideProgress();
+				window.location.reload(false);
+			}
+		);
+	},
 },{
 
 	//Contains the convert Potential form

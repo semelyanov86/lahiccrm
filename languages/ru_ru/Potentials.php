@@ -55,7 +55,9 @@ $languageStrings = array(
     'LBL_POTENTIALS_FIELD_MAPPING_INCOMPLETE' => 'Отображение возможностей полей является неполным (Настройки> Менеджер модулей> Возможности> Возможности Поле Mapping)',
     'LBL_CREATE_PROJECT' => 'Создать проект',
     'LBL_CUSTOM_FIELD_MAPPING'=> 'Возможность сопоставления проектов',
-    'Contact Name' => 'Имя Контакта',   
+    'Contact Name' => 'Имя Контакта',
+    'LBL_SUCCESS_RECALCULATE' => 'Пересчёт произведён успешно!',
+    'LBL_BOTTLES_RECALCULATE' => 'Пересчёт бутылей'
 );
 
 $jsLanguageStrings = array(

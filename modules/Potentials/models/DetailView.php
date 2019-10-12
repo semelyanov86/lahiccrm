@@ -106,6 +106,15 @@ class Potentials_DetailView_Model extends Vtiger_DetailView_Model {
 			);
 			$linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
 		}
+        if(true) {
+            $basicActionLink = array(
+                'linktype' => 'DETAILVIEWBASIC',
+                'linklabel' => vtranslate('LBL_BOTTLES_RECALCULATE', $recordModel->getModuleName()),
+                'linkurl' => 'javascript:Potentials_Detail_Js.recalculateBottles();',
+                'linkicon' => ''
+            );
+            $linkModelList['DETAILVIEWBASIC'][] = Vtiger_Link_Model::getInstanceFromValues($basicActionLink);
+        }
 		
 		foreach($CalendarActionLinks as $basicLink) {
 			$linkModelList['DETAILVIEW'][] = Vtiger_Link_Model::getInstanceFromValues($basicLink);
