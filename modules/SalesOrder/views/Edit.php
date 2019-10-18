@@ -10,6 +10,27 @@
 
 Class SalesOrder_Edit_View extends Inventory_Edit_View {
 
+    public function checkPermission(Vtiger_Request $request) {
+        parent::checkPermission($request);
+        $record = $request->get('record');
+        if ($record) {
+            $this->checkOrderStatus($record);
+        }
+    }
+
+    protected function checkOrderStatus(string $record)
+    {
+        $recordModel = Vtiger_Record_Model::getInstanceById($record, 'SalesOrder');
+        $status = $recordModel->get('sostatus');
+        if ($status == 'Closed') {
+            $userModel = Users_Record_Model::getCurrentUserModel();
+            $currole = $userModel->getRole();
+            if ($currole != 'H2' && $currole != 'H7') {
+                throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
+            }
+        }
+    }
+
 	public function process(Vtiger_Request $request) {
 		parent::process($request);
 	}
