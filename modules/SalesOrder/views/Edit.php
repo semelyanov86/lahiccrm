@@ -24,8 +24,7 @@ Class SalesOrder_Edit_View extends Inventory_Edit_View {
         $status = $recordModel->get('sostatus');
         if ($status == 'Closed') {
             $userModel = Users_Record_Model::getCurrentUserModel();
-            $currole = $userModel->getRole();
-            if ($currole != 'H2' && $currole != 'H7') {
+            if (!$userModel->isAdminUser()) {
                 throw new AppException(vtranslate('LBL_PERMISSION_DENIED'));
             }
         }
