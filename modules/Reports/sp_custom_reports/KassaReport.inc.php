@@ -5,6 +5,7 @@
 class KassaReport extends AbstractCustomReportModel {
 
     public $sqlDate;
+    public $printDate;
 
     public function getChartsViewControlData() {
         return array(
@@ -69,6 +70,7 @@ class KassaReport extends AbstractCustomReportModel {
     private function formatAndSetDate($date)
     {
         $dateObject = DateTime::createFromFormat('d-m-Y', $date);
+        $this->printDate = $date;
         $this->sqlDate = $dateObject->format('Y-m-d');
         return $this->sqlDate;
     }
@@ -94,6 +96,26 @@ class KassaReport extends AbstractCustomReportModel {
 
     protected function getLabels($outputFormat = 'PDF') {
         return ["Основание", "Остаток на начало дня", "Приход", "Расход", "Остаток на конец"];
+    }
+
+    /**
+     * Returns data which need to print on same action
+     * @return string
+     */
+    public function getPrintData() {
+        $result = $this->getData();
+
+        $viewer = new Vtiger_Viewer();
+        $viewer->assign('COLUMN_NAMES', array_keys(reset($result['data'])));
+        $viewer->assign('DATA', $result['data']);
+        $viewer->assign('CUSTOM_REPORT', $this);
+        $viewer->assign('PRINT_DATE', $this->printDate);
+        $viewer->assign('COMPANY_INFO', Settings_Vtiger_CompanyDetails_Model::getInstance());
+
+        $printOutput = array();
+        $printOutput[] = $viewer->view('sp_custom_reports/KassaDefaultPrint.tpl', $this->vtigerReportModel->getModuleName(), true);
+        $printOutput[] = $this->getCount();
+        return $printOutput;
     }
 
 }
