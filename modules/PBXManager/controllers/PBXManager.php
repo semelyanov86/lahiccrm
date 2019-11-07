@@ -62,8 +62,10 @@ class PBXManager_PBXManager_Controller {
      * return Response object
      */
     function processDialBeginCall($request) {
-        //$callerNumber = $request->get('coallerIdNumber');
-        $callerNumber = $request->get('operator');
+        $callerNumber = $request->get('callerIdNumber');
+	if ($callerNumber == '+994512550525' && $request->get('operator')) {
+            $callerNumber = $request->get('operator'); 
+        }
         
         /* Get dialed number by caller. It has unified format so we need check variants */
         $destinationNumber = '';
@@ -118,7 +120,10 @@ class PBXManager_PBXManager_Controller {
         $temp = explode("-", $temp);
         $temp = explode("/", $temp[0]);
 
-        $callerNumber = $request->get('operator');
+        $callerNumber = $request->get('callerIdNumber');
+	if ($callerNumber == '+994512550525' && $request->get('operator')) {
+            $callerNumber = $request->get('operator'); 
+        }
         $userInfo = PBXManager_Record_Model::getUserInfoWithNumber($callerNumber);
 
         if (!$userInfo) {
@@ -132,10 +137,10 @@ class PBXManager_PBXManager_Controller {
             // Outbound Call
             $request->set('Direction', 'outbound');
 
-            if ($request->get('operator') == $temp[1]) {
+            if ($request->get('callerIdNumber') == $temp[1]) {
                 $to = $request->get('callerIdName');
-            } else if ($request->get('operator')) {
-                $to = $request->get('operator');
+            } else if ($request->get('callerIdNumber')) {
+                $to = $request->get('callerIdNumber');
             } else if ($request->get('callerId')) {
                 $to = $request->get('callerId');
             }

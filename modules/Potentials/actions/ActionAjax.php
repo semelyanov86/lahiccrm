@@ -1,6 +1,6 @@
 <?php
 
-class Assets_ActionAjax_Action extends Vtiger_Action_Controller
+class Potentials_ActionAjax_Action extends Vtiger_Action_Controller
 {
     public function checkPermission(Vtiger_Request $request)
     {

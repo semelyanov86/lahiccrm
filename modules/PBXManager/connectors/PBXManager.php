@@ -20,7 +20,7 @@ class PBXManager_PBXManager_Connector {
     // SalesPlatform.ru end
     //SalesPlatform.ru begin
     //private static $RINGING_CALL_PARAMETERS = array('From' => 'callerIdNumber', 'SourceUUID' => 'callUUID', 'Direction' => 'Direction');
-    private static $RINGING_CALL_PARAMETERS = array('From' => 'operator', 'SourceUUID' => 'callUUID', 'Direction' => 'Direction', 'IncomingLineName' => 'connectedLineName');
+    private static $RINGING_CALL_PARAMETERS = array('From' => 'callerIdNumber', 'SourceUUID' => 'callUUID', 'Direction' => 'Direction', 'IncomingLineName' => 'connectedLineName');
     //SalesPlatform.ru end
     private static $NUMBERS = array();
     private $webappurl;
@@ -114,8 +114,8 @@ class PBXManager_PBXManager_Connector {
     public function handleDialCall($details) {
         $callid = $details->get('callUUID');
 
-        $answeredby = $details->get('operator');
-        $caller = $details->get('operator');
+        $answeredby = $details->get('callerid2');
+        $caller = $details->get('callerid1');
 
         // For Inbound call, answered by will be the user, we should fill the user field
 
@@ -180,7 +180,7 @@ class PBXManager_PBXManager_Connector {
         $params['billduration'] = $details->get('billableseconds');
         
         //SalesPlatform.ru begin
-        $userNumber = $details->get('operator');
+        $userNumber = $details->get('callerNumber');
         $user = PBXManager_Record_Model::getUserInfoWithNumber($userNumber);
         $recordModel = PBXManager_Record_Model::getInstanceBySourceUUID($callid, $user);
         $recordModel->updateCallDetails($params, $user);
@@ -196,7 +196,7 @@ class PBXManager_PBXManager_Connector {
         $callid = $details->get('callUUID');
 
         // SalesPlatform.ru begin
-        $userNumber = $details->get('operator');
+        $userNumber = $details->get('callerIdNum');
         $user = PBXManager_Record_Model::getUserInfoWithNumber($userNumber);
         if(!$user) {
             return;
