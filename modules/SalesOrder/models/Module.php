@@ -13,7 +13,7 @@ class SalesOrder_Module_Model extends Inventory_Module_Model{
     public function calcOstatok($id)
     {
         global $adb;
-        $query = "SELECT salesorderid FROM `vtiger_salesorder` INNER JOIN vtiger_crmentity ON vtiger_salesorder.salesorderid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = 0 AND vtiger_salesorder.potentialid = ? AND (`sostatus` = 'Paid Delivered' OR `sostatus` = 'Delivery Done' OR `sostatus` = 'Payment made' OR `sostatus` = 'Closed' OR `sostatus` = 'Delivered')";
+        $query = "SELECT salesorderid FROM `vtiger_salesorder` INNER JOIN vtiger_crmentity ON vtiger_salesorder.salesorderid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = 0 AND vtiger_salesorder.potentialid = ? AND (`sostatus` = 'Paid Delivered' OR `sostatus` = 'Delivery Done' OR `sostatus` = 'Payment made' OR `sostatus` = 'Closed')";
         $result = $adb->pquery($query, array($id));
         $salesList = array();
         $soSum = 0;
@@ -33,7 +33,7 @@ class SalesOrder_Module_Model extends Inventory_Module_Model{
             }
         }
 
-        $query = "SELECT purchaseorderid FROM `vtiger_purchaseorder` INNER JOIN vtiger_crmentity ON vtiger_purchaseorder.purchaseorderid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = 0 AND vtiger_purchaseorder.cf_potentials_id = ?";
+        $query = "SELECT purchaseorderid FROM `vtiger_purchaseorder` INNER JOIN vtiger_crmentity ON vtiger_purchaseorder.purchaseorderid = vtiger_crmentity.crmid WHERE vtiger_crmentity.deleted = 0 AND vtiger_purchaseorder.cf_potentials_id = ? AND (`postatus` = 'Delivered and Paid' OR `postatus` = 'Delivery Made' OR `postatus` = 'Payment made' OR `postatus` = 'Closed')";
         $result = $adb->pquery($query, array($id));
         $purchaseList = array();
         if ($result && $adb->num_rows($result)) {
